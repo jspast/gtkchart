@@ -208,7 +208,7 @@ static void chart_draw_line_or_scatter(GtkChart *self,
 
     // Draw x-axis value at 100% mark
     gdk_cairo_set_source_rgba (cr, &self->text_color);
-    g_snprintf(value, sizeof(value), "%.1f", self->x_max);
+    g_snprintf(value, sizeof(value), "%.0f", self->x_max);
     cairo_set_font_size (cr, 8.0 * (w/650));
     cairo_text_extents(cr, value, &extents);
     cairo_move_to (cr, 0.9 * w - extents.width/2, 0.16 * h);
@@ -218,7 +218,7 @@ static void chart_draw_line_or_scatter(GtkChart *self,
     cairo_restore(cr);
 
     // Draw x-axis value at 75% mark
-    g_snprintf(value, sizeof(value), "%.1f", (self->x_max/4) * 3);
+    g_snprintf(value, sizeof(value), "%.0f", (self->x_max/4) * 3);
     cairo_set_font_size (cr, 8.0 * (w/650));
     cairo_text_extents(cr, value, &extents);
     cairo_move_to (cr, 0.7 * w - extents.width/2, 0.16 * h);
@@ -228,7 +228,7 @@ static void chart_draw_line_or_scatter(GtkChart *self,
     cairo_restore(cr);
 
     // Draw x-axis value at 50% mark
-    g_snprintf(value, sizeof(value), "%.1f", self->x_max/2);
+    g_snprintf(value, sizeof(value), "%.0f", self->x_max/2);
     cairo_set_font_size (cr, 8.0 * (w/650));
     cairo_text_extents(cr, value, &extents);
     cairo_move_to (cr, 0.5 * w - extents.width/2, 0.16 * h);
@@ -238,7 +238,7 @@ static void chart_draw_line_or_scatter(GtkChart *self,
     cairo_restore(cr);
 
     // Draw x-axis value at 25% mark
-    g_snprintf(value, sizeof(value), "%.1f", self->x_max/4);
+    g_snprintf(value, sizeof(value), "%.0f", self->x_max/4);
     cairo_set_font_size (cr, 8.0 * (w/650));
     cairo_text_extents(cr, value, &extents);
     cairo_move_to (cr, 0.3 * w - extents.width/2, 0.16 * h);
@@ -266,7 +266,7 @@ static void chart_draw_line_or_scatter(GtkChart *self,
     cairo_restore(cr);
 
     // Draw y-axis value at 25% mark
-    g_snprintf(value, sizeof(value), "%.1f", self->y_max/4);
+    g_snprintf(value, sizeof(value), "%.0f", self->y_max/4);
     cairo_set_font_size (cr, 8.0 * (w/650));
     cairo_text_extents(cr, value, &extents);
     cairo_move_to (cr, 0.091 * w - extents.width, 0.34 * h);
@@ -276,7 +276,7 @@ static void chart_draw_line_or_scatter(GtkChart *self,
     cairo_restore(cr);
 
     // Draw y-axis value at 50% mark
-    g_snprintf(value, sizeof(value), "%.1f", self->y_max/2);
+    g_snprintf(value, sizeof(value), "%.0f", self->y_max/2);
     cairo_set_font_size (cr, 8.0 * (w/650));
     cairo_text_extents(cr, value, &extents);
     cairo_move_to (cr, 0.091 * w - extents.width, 0.49 * h);
@@ -286,7 +286,7 @@ static void chart_draw_line_or_scatter(GtkChart *self,
     cairo_restore(cr);
 
     // Draw y-axis value at 75% mark
-    g_snprintf(value, sizeof(value), "%.1f", (self->y_max/4) * 3);
+    g_snprintf(value, sizeof(value), "%.0f", (self->y_max/4) * 3);
     cairo_set_font_size (cr, 8.0 * (w/650));
     cairo_text_extents(cr, value, &extents);
     cairo_move_to (cr, 0.091 * w - extents.width, 0.64 * h);
@@ -296,7 +296,7 @@ static void chart_draw_line_or_scatter(GtkChart *self,
     cairo_restore(cr);
 
     // Draw y-axis value at 100% mark
-    g_snprintf(value, sizeof(value), "%.1f", self->y_max);
+    g_snprintf(value, sizeof(value), "%.0f", self->y_max);
     cairo_set_font_size (cr, 8.0 * (w/650));
     cairo_text_extents(cr, value, &extents);
     cairo_move_to (cr, 0.091 * w - extents.width, 0.79 * h);
@@ -398,6 +398,14 @@ static void chart_draw_line_or_scatter(GtkChart *self,
                 cairo_move_to(cr, point->x * x_scale, point->y * y_scale);
                 cairo_close_path (cr);
                 cairo_stroke (cr);
+                break;
+
+            case GTK_CHART_TYPE_HISTOGRAM:
+                // Draw bin
+                cairo_move_to(cr, point->x * x_scale, point->y * y_scale);
+                cairo_line_to(cr, point->x * x_scale, 0 * y_scale);
+                cairo_close_path (cr);
+                cairo_stroke(cr);
                 break;
         }
     }
@@ -706,6 +714,7 @@ static void gtk_chart_snapshot (GtkWidget   *widget,
     {
         case GTK_CHART_TYPE_LINE:
         case GTK_CHART_TYPE_SCATTER:
+        case GTK_CHART_TYPE_HISTOGRAM:
             chart_draw_line_or_scatter(self, snapshot, height, width);
             break;
 
